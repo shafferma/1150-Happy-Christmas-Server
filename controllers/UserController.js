@@ -7,7 +7,7 @@ module.exports = {
     register: function(request, response) {
         // we wrap our code in a try/catch incase the request doesn't contain a user object
         try {
-            const {username, password} = request.body.user
+            const {username, password} = request.body
 
             //user did not provide their username and password
             if (!username || !password) {
