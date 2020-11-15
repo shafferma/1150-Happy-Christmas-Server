@@ -4,6 +4,6 @@ module.exports = function(sequelize, DataTypes){
         name: DataTypes.STRING,
         description: DataTypes.STRING,
         user_id: DataTypes.INTEGER,
-        file_name: DataTypes.STRING,
+        photo_id: DataTypes.STRING,
     });
 };
