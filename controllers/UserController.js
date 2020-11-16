@@ -54,7 +54,32 @@ module.exports = {
         } catch(error) {
             console.log("create user error", error)
             response.send(500, "Error")
-            return
         }
-    }
+    },
+
+    get: function (request, response) {
+        try {
+
+        } catch(error) {
+            console.log('get error', error)
+            response.send(500, "Error")
+        }
+    },
+    update: function (request, response) {
+        try {
+
+        } catch(error) {
+            console.log('update error', error)
+            response.send(500, "Error")
+        }
+    },
+    remove: function (request, response) {
+        try {
+
+        } catch(error) {
+            console.log('remove error', error)
+            response.send(500, "Error")
+        }
+    },
 }
+
