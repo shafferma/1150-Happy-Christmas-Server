@@ -9,7 +9,7 @@ module.exports = {
     // handles our "user logic"
     login: function(request, response){
         try {
-            const {username, password} = request.body.user
+            const {username, password} = request.body
 
             User.findOne({ 
                 where: {
@@ -24,7 +24,7 @@ module.exports = {
                 }
 
                 // check that the user provided the correct password
-                Password.compare(password, user.passwordhash)
+                Password.compare(password, user.password)
                     .then((isSamePassword) => {
                         console.log('Check provided password', {isSamePassword})
                         if (!isSamePassword) {
@@ -49,6 +49,7 @@ module.exports = {
         
         } catch(error) {
             // this error is only sent if there is a problem with our logic above
+            console.log(error)
             response.status(500).send("Server error")
         }
         

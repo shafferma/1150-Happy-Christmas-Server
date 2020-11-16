@@ -1,4 +1,6 @@
 const FavoriteController = require("../controllers/FavoriteController")
+const RatingController = require("../controllers/RatingController")
+
 
 module.exports = function(router) {
     /*
@@ -13,6 +15,8 @@ module.exports = function(router) {
 
     router.post("/photo/:id/favorite", FavoriteController.addFavorite)
     router.delete("/photo/:id/favorite", FavoriteController.removeFavorite)
+    router.post("/photo/:id/rating/:rating", RatingController.addRating)
+    router.delete("/photo/:id/rating", RatingController.removeRating)
     // router.delete("/favorite/:id", FavoriteController.removeFavorite)
 
     return router

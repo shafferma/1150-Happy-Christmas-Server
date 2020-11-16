@@ -12,9 +12,8 @@ module.exports = {
       const photoId = request.params.id;
       const userId = request.user.id;
 
-      /**
-       * Check if favorite already exists
-       */
+      // Check if favorite already exists
+      
       let FavoriteExists = false;
       Favorite.findOne({
         where: {
@@ -75,9 +74,3 @@ module.exports = {
     }
   },
 };
-
-// remove favorite todo steps
-/*
-    1. check if user passed favorite id in the request params
-    2. delete favorite by id
-*/

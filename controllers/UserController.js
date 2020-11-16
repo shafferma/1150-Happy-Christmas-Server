@@ -36,7 +36,7 @@ module.exports = {
                 // if username doesn't exist create user
                 User.create({
                     username: username,
-                    passwordhash: Password.hash(password)
+                    password: Password.hash(password)
                 }).then((user) => {
                     // generate a session token using the newly created user object
                     const token = Session.generateToken(user)
