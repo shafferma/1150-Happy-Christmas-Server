@@ -5,6 +5,8 @@ module.exports = {
   get: function (request, response) {
     try {
 
+
+      
         // return [
         //     ...
         //     {
@@ -23,6 +25,7 @@ module.exports = {
         response.status(500).send({ error })    
     }
   },
+  
 };
 
 

@@ -110,10 +110,24 @@ module.exports = {
     },
     updateSingle: function (request, response) {
         try {
+            const { username } = request.params
+            User.update({
+                where: {
+                    username: Values.strip(username)
+                }
+            }).then((username) => {
+                response.status(200).send({
+                    data: { ...user.dataValues, user: username},
+                    message: "Username updated",
+                })
+            }) 
+            return;
+
+
             // Values.strip(username)
-            response.status(200).send({
-                beep: 'boop'
-            })
+            // response.status(200).send({
+            //     beep: 'boop'
+            // })
         } catch(error) {
             console.log('update error', error)
             response.send(500, "Error")
@@ -121,9 +135,16 @@ module.exports = {
     },
     removeSingle: function (request, response) {
         try {
+            const { username } = request.params
+
+            User.destroy({
+                where: {
+                    username: Values.strip(username)
+                }
+            })
             // Values.strip(username)
             response.status(200).send({
-                beep: 'boop'
+                message: "User removed"
             })
         } catch(error) {
             console.log('remove error', error)
