@@ -2,6 +2,7 @@ const DB = require("../db")
 const User = DB.import("../models/user")
 const Session = require("../utls/session")
 const Password = require("../utls/password")
+const Values = require("../utls/values")
 
 const INCORRECT_CREDENTIALS = "The user does not exist or the credentials were not correct.";
 
@@ -13,7 +14,7 @@ module.exports = {
 
             User.findOne({ 
                 where: {
-                    username: username
+                    username: Values.strip(username)
                 }
             }).then((user) => {
                 console.log("Found User", user)

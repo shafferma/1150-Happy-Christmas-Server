@@ -2,6 +2,7 @@ const DB = require("../db")
 const User = DB.import("../models/user")
 const Session = require("../utls/session")
 const Password = require("../utls/password")
+const Values = require("../utls/values")
 
 module.exports = {
     register: function(request, response) {
@@ -15,11 +16,13 @@ module.exports = {
                 return
             }
 
+            const strippedUsername = Values.strip(username)
+
             //check if username already exists
             let userExists = false
             User.findOne({
                 where: {
-                    username
+                    username: strippedUsername
                 }
             }).then(user => {
 
@@ -35,7 +38,7 @@ module.exports = {
     
                 // if username doesn't exist create user
                 User.create({
-                    username: username,
+                    username: strippedUsername,
                     password: Password.hash(password)
                 }).then((user) => {
                     // generate a session token using the newly created user object
@@ -47,7 +50,6 @@ module.exports = {
                         message: "Account registered",
                         sessionToken: token
                     })
-                    return
                 })
             })
 
@@ -57,25 +59,72 @@ module.exports = {
         }
     },
 
-    get: function (request, response) {
+    getList: function (request, response) {
         try {
-
-        } catch(error) {
-            console.log('get error', error)
-            response.send(500, "Error")
-        }
-    },
-    update: function (request, response) {
-        try {
-
+            response.status(200).send({
+                beep: 'boop'
+            })
         } catch(error) {
             console.log('update error', error)
             response.send(500, "Error")
         }
     },
-    remove: function (request, response) {
-        try {
 
+    getSingle: function (request, response) {
+        try {
+            const { username } = request.params
+
+            User.findOne({
+                where: {
+                    username: Values.strip(username)
+                }
+            }).then(user => {
+
+                // determine if the user exists for the given username
+                userExists = !!user
+    
+                // if username already exists, return an error
+                if (userExists) {
+                    const userData = {
+                        ...user.dataValues
+                    }
+                    delete userData['password']
+                    response.status(200).send({
+                        user: userData,
+                        message: "User found",
+                    })
+                    return
+                }
+
+                response.status(404).send({
+                    data: null,
+                    message: "User not found",
+                })
+                // else, return response telling the client the user was not found
+    
+            })
+        } catch(error) {
+            console.log('get error', error)
+            response.send(500, "Error")
+        }
+    },
+    updateSingle: function (request, response) {
+        try {
+            // Values.strip(username)
+            response.status(200).send({
+                beep: 'boop'
+            })
+        } catch(error) {
+            console.log('update error', error)
+            response.send(500, "Error")
+        }
+    },
+    removeSingle: function (request, response) {
+        try {
+            // Values.strip(username)
+            response.status(200).send({
+                beep: 'boop'
+            })
         } catch(error) {
             console.log('remove error', error)
             response.send(500, "Error")
