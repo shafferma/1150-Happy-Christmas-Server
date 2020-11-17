@@ -22,7 +22,7 @@ module.exports = function(request, response, next) {
                 })
                 .catch((error) => {
                     console.log('error validating session', { error })
-                    resoponse.status(500).send('Something went wrong validating your session.')
+                    response.status(500).send('Something went wrong validating your session.')
                 })
         }
     }

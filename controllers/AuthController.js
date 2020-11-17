@@ -2,6 +2,7 @@ const DB = require("../db")
 const User = DB.import("../models/user")
 const Session = require("../utls/session")
 const Password = require("../utls/password")
+const Values = require("../utls/values")
 
 const INCORRECT_CREDENTIALS = "The user does not exist or the credentials were not correct.";
 
@@ -9,11 +10,11 @@ module.exports = {
     // handles our "user logic"
     login: function(request, response){
         try {
-            const {username, password} = request.body.user
+            const {username, password} = request.body
 
             User.findOne({ 
                 where: {
-                    username: username
+                    username: Values.strip(username)
                 }
             }).then((user) => {
                 console.log("Found User", user)
@@ -24,7 +25,7 @@ module.exports = {
                 }
 
                 // check that the user provided the correct password
-                Password.compare(password, user.passwordhash)
+                Password.compare(password, user.password)
                     .then((isSamePassword) => {
                         console.log('Check provided password', {isSamePassword})
                         if (!isSamePassword) {
@@ -49,6 +50,7 @@ module.exports = {
         
         } catch(error) {
             // this error is only sent if there is a problem with our logic above
+            console.log(error)
             response.status(500).send("Server error")
         }
         
