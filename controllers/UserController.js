@@ -8,11 +8,11 @@ module.exports = {
   register: function (request, response) {
     // we wrap our code in a try/catch incase the request doesn't contain a user object
     try {
-      const { username, password } = request.body;
+      const { username, password, email, firstname, lastname } = request.body;
 
       //user did not provide their username and password
-      if (!username || !password) {
-        response.status(400).send("Provide username and password");
+      if (!username || !password || !email || !firstname || !lastname) {
+        response.status(400).send("A username, password, firstname, lastname, and email are required to register.");
         return;
       }
 
@@ -39,6 +39,9 @@ module.exports = {
         User.create({
           username: strippedUsername,
           password: Password.hash(password),
+          firstname,
+          lastname,
+          email,
           admin: false,
         }).then((user) => {
           // generate a session token using the newly created user object
@@ -109,9 +112,9 @@ module.exports = {
       const { username } = request.params;
       const { firstname, lastname, email, password } = request.body;
       const userData = {
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
+        firstname,
+        lastname,
+        email,
         ...(password ? { password: Password.hash(password) } : {}),
       };
       console.log(request.body);

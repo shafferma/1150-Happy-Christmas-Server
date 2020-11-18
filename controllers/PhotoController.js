@@ -2,13 +2,56 @@ const DB = require("../db");
 const Photo = DB.import("../models/photo");
 
 module.exports = {
-  get: function (request, response) {
+  getList: function (request, response) {
     try {
 
+
+     
+    } catch (error) {
+      console.log("PhotoController.get error", error)
+      response.status(500).send({ error })
+    }
+  },
+  getPhoto: function (request, response) {
+    try {
       const photoId = request.params.id;
 
+      Photo.findOne({
+        where: {
+          id: photoId
+        },
+      }).then((photo) => {
+
+          // if username already exists, return an error
+          if (!photo) {
+            response.status(400).send({
+              data: null,
+              message: "Photo not found",
+            });
+            return;
+          }
+
+        response.status(200).send({
+          data: photo,
+          message: "Photo found",
+        });
+        // else, return response telling the client the user was not found
+      });
+     
+    } catch (error) {
+      console.log("PhotoController.get error", error)
+      response.status(500).send({ error })
+    }
+  },
+  addPhoto: function (request, response) {
+    try {
+
+      const { name, description, photo } = request.body
+      const userId = request.user.id;
+      const filename = "value"
+
       Photo.create({
-        photo_id: photoId,
+        name: name,
         description: description,
         user_id: userId,
         filename: filename,
@@ -18,25 +61,35 @@ module.exports = {
           message: "Photo created"
         });
       });
+
+     
     } catch (error) {
       console.log("PhotoController.get error", error)
       response.status(500).send({ error })
     }
   },
+
   updatePhoto: function (request, response) {
     try {
-      // const { } = request.params;
 
-      Photo.update(userData, {
-        where: {
-          photo_id: photoId,
-          filename: filename,
-          description: description,
+      const photoId = request.params.id;
+      const { name, description } = request.body
+      
+      const photoData = {
+        name, 
+        description
+      }
 
-        },
-      }).then(() => {
+      Photo.update(
+        photoData, 
+        {
+          where: {
+            id: photoId
+          },
+        }
+      ).then(() => {
         response.status(200).send({
-          data: { ...userData, photoId },
+          data: { ...photoData, id: photoId },
           message: "Photo updated",
         });
       });
@@ -50,17 +103,14 @@ module.exports = {
 
   removePhoto: function (request, response) {
     try {
-      const { photoId } = request.params;
-      // if (!request.user.admin) {
-      //   response.status(401).send({
-      //     error: "Permission denied",
-      //   });
-      //   return;
-      // }
+      const photoId = request.params.id;
+      const isAdmin = request.user.admin;
+      const userId = request.user.id;
 
       Photo.destroy({
         where: {
-          photo_id: photoId,
+          id: photoId,
+          ...(!isAdmin ? { user_id: userId } : {})
         },
       }).then((photoDeleted) => {
         if (!photoDeleted) {
@@ -79,13 +129,3 @@ module.exports = {
     }
   },
 };
-     // return [
-      //     ...
-      //     {
-      //        id: 1,
-      //        name: 'Xmas 2020!' ,
-      //        description: 'Something cool I made...',
-      //        username: user.username,
-      //        isFavorited: true
-      //     }
-      // ]
