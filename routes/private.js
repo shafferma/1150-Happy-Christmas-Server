@@ -19,5 +19,14 @@ module.exports = function(router) {
     router.post("/photo/:id/rating/:rating", RatingController.addRating)
     router.delete("/photo/:id/rating", RatingController.removeRating)
 
+    // photos
+    /*
+    router.get("/photo/", PhotoController.getPhoto)
+    router.post("/photo/:id", PhotoController.addPhoto)
+    router.put("/photo/:id", PhotoController.updatePhoto)
+    router.delete("/photo/:id", PhotoController.removePhoto)
+     */
+
+
     return router
 }

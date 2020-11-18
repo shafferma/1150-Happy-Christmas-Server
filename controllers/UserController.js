@@ -61,7 +61,6 @@ module.exports = {
   getList: function (request, response) {
     try {
       response.status(200).send({
-        beep: "boop",
       });
     } catch (error) {
       console.log("update error", error);
