@@ -63,11 +63,24 @@ module.exports = {
 
   getList: function (request, response) {
     try {
-      response.status(200).send({
-      });
+     
+      const { limit, page } = request.body
+      const pageCheck = page > 0 ? page-1 : 0 
+      const offset = limit * pageCheck 
+
+      User.findAndCountAll({
+        limit,
+        offset
+      }).then(users => {
+        response.status(200).send({
+          data: users, 
+          message: "Users found"
+        })
+      })
+     
     } catch (error) {
-      console.log("update error", error);
-      response.send(500, "Error");
+      console.log("UserController.getList error", error)
+      response.status(500).send({ error })
     }
   },
 

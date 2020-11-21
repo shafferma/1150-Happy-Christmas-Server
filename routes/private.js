@@ -7,7 +7,7 @@ const PhotoController = require("../controllers/PhotoController")
 module.exports = function(router) {
 
     // user
-    router.get("/user", UserController.getList)
+    router.get("/users", UserController.getList)
     router.get("/user/:username", UserController.getSingle)
     router.put("/user/:username", UserController.updateSingle)
     router.delete("/user/:username", UserController.removeSingle)

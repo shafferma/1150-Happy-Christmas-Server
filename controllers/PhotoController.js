@@ -16,12 +16,12 @@ module.exports = {
       }).then(photos => {
         response.status(200).send({
           data: photos, 
-          message: "Photos"
+          message: "Photos found"
         })
       })
      
     } catch (error) {
-      console.log("PhotoController.get error", error)
+      console.log("PhotoController.getList error", error)
       response.status(500).send({ error })
     }
   },
