@@ -5,8 +5,20 @@ const File = require('../utls/file');
 module.exports = {
   getList: function (request, response) {
     try {
+     
+      const { limit, page } = request.body
+      const pageCheck = page > 0 ? page-1 : 0 
+      const offset = limit * pageCheck 
 
-
+      Photo.findAndCountAll({
+        limit,
+        offset
+      }).then(photos => {
+        response.status(200).send({
+          data: photos, 
+          message: "Photos"
+        })
+      })
      
     } catch (error) {
       console.log("PhotoController.get error", error)
@@ -80,7 +92,8 @@ module.exports = {
 
   updatePhoto: function (request, response) {
     try {
-
+      const isAdmin = request.user.admin;
+      const userId = request.user.id;
       const photoId = request.params.id;
       const { name, description } = request.body
       
@@ -93,7 +106,8 @@ module.exports = {
         photoData, 
         {
           where: {
-            id: photoId
+            id: photoId,
+          ...(!isAdmin ? { user_id: userId } : {})
           },
         }
       ).then(() => {
