@@ -1,5 +1,6 @@
 const DB = require("../db");
 const Photo = DB.import("../models/photo");
+const File = require('../utls/file');
 
 module.exports = {
   getList: function (request, response) {
@@ -46,15 +47,23 @@ module.exports = {
   addPhoto: function (request, response) {
     try {
 
-      const { name, description, photo } = request.body
+      // id of the user who made the request
       const userId = request.user.id;
-      const filename = "value"
+      // user input about the photo
+      const { name, description, photo } = request.body
+
+      // get file type (extension) from the base64 string
+      const { extension, string } = File.getInfoFromBase64(photo)
+      // create a unique filename using the file type
+      const filename = File.generateFilename(extension)
+      // convert string to file and save to /uploads
+      File.createFile(filename, string)
 
       Photo.create({
         name: name,
         description: description,
         user_id: userId,
-        filename: filename,
+        filename,
       }).then((photo) => {
         response.status(200).send({
           data: photo,

@@ -2,6 +2,7 @@
 require("dotenv").config();
 
 // import the "express " framework for creating our server
+const bodyParser = require("body-parser")
 const express = require("express")
 
 // create our server application
@@ -24,7 +25,9 @@ database.authenticate()
     })
 
 // middleware: tells our application to parse requsts as JSON
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb' }))
+
 //tells our application what "request headers" are allowed
 app.use(require("./middleware/headers"));
 
@@ -54,6 +57,8 @@ privateRouter.use(require('./middleware/validate-session'))
 // register our private routes with our private router
 app.use("/api", privateRoutes(privateRouter))
 
+// Static route for serving uploaded photos
+app.use('/photos', express.static(__dirname + '/uploads'));
 
 // our server application is running
 app.listen(process.env.SERVER_PORT, function() {
