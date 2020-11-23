@@ -61,6 +61,6 @@ app.use("/api", privateRoutes(privateRouter))
 app.use('/photos', express.static(__dirname + '/uploads'));
 
 // our server application is running
-app.listen(process.env.SERVER_PORT, function() {
+app.listen((process.env.PORT || 5000), function() {
     console.log(`Application running on ${process.env.DB_HOST}:${process.env.SERVER_PORT}`)
 })
