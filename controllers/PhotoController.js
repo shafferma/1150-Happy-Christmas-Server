@@ -2,6 +2,8 @@ const DB = require("../db");
 const Photo = DB.import("../models/photo");
 const File = require('../utls/file');
 const Address = require('../utls/address');
+const Cloud = require('cloudinary').v2;
+const { v4: uuid } = require('uuid');
 
 module.exports = {
   getList: function (request, response) {
@@ -71,31 +73,48 @@ module.exports = {
 
       // id of the user who made the request
       const userId = request.user.id;
+
       // user input about the photo
+      // `photo` is a base64 string 
       const { name, description, photo } = request.body
 
-      // get file type (extension) from the base64 string
-      const { extension, string } = File.getInfoFromBase64(photo)
-      // create a unique filename using the file type
-      const filename = File.generateFilename(extension)
-      // convert string to file and save to /uploads
-      File.createFile(filename, string)
+      // generate a unique ID - https://github.com/uuidjs/uuid
+      const filename = uuid() // example ⇨ '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
 
-      Photo.create({
-        name: name,
-        description: description,
-        user_id: userId,
-        filename,
-      }).then((photo) => {
-        response.status(200).send({
-          data: photo,
-          message: "Photo created"
+      /**
+       * Upload base64String to Cloudinary account.
+       * Use result to populate `photo` table.
+       */
+      Cloud.uploader.upload(photo, { public_id: filename }, (error, result) => {
+
+        if (error) {
+          console.log('Error uploading photo to Cloudinary', { error })
+          throw 'Error uploading photo.'
+        }
+
+        Photo.create({
+          name: name,
+          description: description,
+          user_id: userId,
+          cloudinary_asset_id: result.asset_id,
+          url: result.secure_url
+        }).then((photo) => {
+
+          // clone newly created data
+          const data = { ...photo.dataValues }
+
+          // remove the asset id, not for public
+          delete data['cloudinary_asset_id']
+
+          response.status(200).send({
+            data,
+            message: "Photo created"
+          });
         });
-      });
+      })
 
-     
     } catch (error) {
-      console.log("PhotoController.get error", error)
+      console.log("PhotoController.addPhoto error", error)
       response.status(500).send({ error })
     }
   },
@@ -129,7 +148,7 @@ module.exports = {
       return;
     }
     catch (error) {
-      console.log("photo error", error);
+      console.log("updatePhoto error", error);
       response.send(500, "Error");
     }
   },
@@ -157,7 +176,7 @@ module.exports = {
         });
       });
     } catch (error) {
-      console.log("remove error", error);
+      console.log("removePhoto error", error);
       response.send(500, "Error");
     }
   },

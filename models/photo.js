@@ -3,6 +3,7 @@ module.exports = function(sequelize, DataTypes){
         name: DataTypes.STRING,
         description: DataTypes.STRING,
         user_id: DataTypes.INTEGER,
-        filename: DataTypes.STRING,
+        cloudinary_asset_id: DataTypes.STRING,
+        url: DataTypes.STRING,
     });
 };

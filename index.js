@@ -44,10 +44,12 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 
 // import our routers
+const fileRoutes = require("./routes/files")
 const publicRoutes = require("./routes/public")
 const privateRoutes = require("./routes/private")
 
 // register our public routes using our public router
+app.use(fileRoutes(publicRouter))
 app.use("/api", publicRoutes(publicRouter))
  
 // register our "validate-session" middleware on our private 
@@ -58,7 +60,7 @@ privateRouter.use(require('./middleware/validate-session'))
 app.use("/api", privateRoutes(privateRouter))
 
 // Static route for serving uploaded photos
-app.use('/photos', express.static(__dirname + '/uploads'));
+// app.use('/photos', express.static(__dirname + '/uploads'));
 
 // our server application is running
 app.listen((process.env.PORT || 5000), function() {
