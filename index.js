@@ -20,8 +20,8 @@ database.authenticate()
     // after initilzations    
     .then(() => {
         console.log(`Connected to the ${process.env.DB_NAME} database.`)
-        // database.sync()
-        database.sync({force: true}) // resets tables
+        database.sync()
+        // database.sync({force: true}) // resets tables
     })
 
 // middleware: tells our application to parse requsts as JSON
@@ -44,12 +44,10 @@ const publicRouter = express.Router()
 const privateRouter = express.Router()
 
 // import our routers
-const fileRoutes = require("./routes/files")
 const publicRoutes = require("./routes/public")
 const privateRoutes = require("./routes/private")
 
 // register our public routes using our public router
-app.use(fileRoutes(publicRouter))
 app.use("/api", publicRoutes(publicRouter))
  
 // register our "validate-session" middleware on our private 
@@ -58,9 +56,6 @@ privateRouter.use(require('./middleware/validate-session'))
 
 // register our private routes with our private router
 app.use("/api", privateRoutes(privateRouter))
-
-// Static route for serving uploaded photos
-// app.use('/photos', express.static(__dirname + '/uploads'));
 
 // our server application is running
 app.listen((process.env.PORT || 5000), function() {
