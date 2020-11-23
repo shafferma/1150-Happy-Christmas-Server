@@ -17,8 +17,8 @@ module.exports = {
       let FavoriteExists = false;
       Favorite.findOne({
         where: {
-          user_id: userId,
-          photo_id: photoId,
+          userId: userId,
+          photoId: photoId,
         },
       }).then((favorite) => {
         FavoriteExists = !!favorite;
@@ -32,8 +32,8 @@ module.exports = {
         }
 
         Favorite.create({
-          user_id: userId,
-          photo_id: photoId,
+          userId: userId,
+          photoId: photoId,
         }).then((favorite) => {
           response.status(200).send({
             data: favorite,
@@ -53,8 +53,8 @@ module.exports = {
 
       Favorite.destroy({
         where: {
-          user_id: userId,
-          photo_id: photoId,
+          userId: userId,
+          photoId: photoId,
         },
       })
         .then((favoriteId) => {

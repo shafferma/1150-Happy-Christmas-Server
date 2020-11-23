@@ -1,7 +1,7 @@
 const DB = require("../db");
 const Photo = DB.import("../models/photo");
-const File = require('../utls/file');
-const Address = require('../utls/address');
+const User = DB.import("../models/user");
+Photo.belongsTo(User, { foreignKey: 'userId' })
 const Cloud = require('cloudinary').v2;
 const { v4: uuid } = require('uuid');
 
@@ -15,19 +15,20 @@ module.exports = {
       const offset = limit * pageCheck 
 
       Photo.findAndCountAll({
-        raw: true,
+        // raw: true,
         limit,
-        offset
+        offset,
+        attributes: [
+          'name',
+          'description',
+          'url',
+          'createdAt',
+          'updatedAt'
+        ],
+        include: [{ model: User, as: 'user', attributes: ['id', 'username'] }]
       }).then(data => {
-
-        const photos = {...data}
-        const webAddress = Address.getWebAddress(request)
-
         response.status(200).send({
-          data: {
-            ...photos,
-            rows: File.mapGenerateFileUrl(webAddress, photos.rows)
-          }, 
+          data, 
           message: "Photos found"
         })
       })
@@ -95,8 +96,8 @@ module.exports = {
         Photo.create({
           name: name,
           description: description,
-          user_id: userId,
-          cloudinary_asset_id: result.asset_id,
+          userId,
+          cloudinary_public_id: result.public_id,
           url: result.secure_url
         }).then((photo) => {
 
@@ -104,7 +105,7 @@ module.exports = {
           const data = { ...photo.dataValues }
 
           // remove the asset id, not for public
-          delete data['cloudinary_asset_id']
+          delete data['cloudinary_assetId']
 
           response.status(200).send({
             data,
@@ -136,7 +137,7 @@ module.exports = {
         {
           where: {
             id: photoId,
-          ...(!isAdmin ? { user_id: userId } : {})
+          ...(!isAdmin ? { userId: userId } : {})
           },
         }
       ).then(() => {
@@ -159,22 +160,48 @@ module.exports = {
       const isAdmin = request.user.admin;
       const userId = request.user.id;
 
-      Photo.destroy({
+      // find photo to get the cloudinary_public_id
+      Photo.findOne({
         where: {
           id: photoId,
-          ...(!isAdmin ? { user_id: userId } : {})
+          ...(!isAdmin ? { userId } : {})
         },
-      }).then((photoDeleted) => {
-        if (!photoDeleted) {
+      }).then(photo => {
+        
+        if (!photo) {
           response.status(404).send({
             error: "Photo not found",
           });
           return;
         }
-        response.status(200).send({
-          message: "Photo removed",
-        });
-      });
+
+        // delete from cloudinary
+        Cloud.uploader.destroy(photo.cloudinary_public_id, {}, (error, result) => {
+          
+          if (error) {
+            throw 'Error deleting photo from Cloudinary', { error }
+          }
+
+          // delete from database if removed from cloudinary
+          Photo.destroy({
+            where: {
+              id: photoId,
+              ...(!isAdmin ? { userId: userId } : {})
+            },
+          }).then((photoDeleted) => {
+            if (!photoDeleted) {
+              response.status(404).send({
+                error: "Photo not found",
+              });
+              return;
+            }
+            response.status(200).send({
+              message: "Photo removed",
+            });
+          });
+        })
+      })
+
     } catch (error) {
       console.log("removePhoto error", error);
       response.send(500, "Error");

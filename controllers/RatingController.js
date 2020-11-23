@@ -12,8 +12,8 @@ module.exports = {
       let ratingExists = false;
       Rating.findOne({
         where: {
-          user_id: userId,
-          photo_id: photoId,
+          userId: userId,
+          photoId: photoId,
         },
       }).then((rating) => {
         ratingExists = !!rating;
@@ -35,8 +35,8 @@ module.exports = {
 
         // else, create new Rating if it did not already exist
         Rating.create({
-          user_id: userId,
-          photo_id: photoId,
+          userId: userId,
+          photoId: photoId,
           rating: rated,
         }).then((rating) => {
           response.status(200).send({
@@ -58,8 +58,8 @@ module.exports = {
 
       Rating.destroy({
         where: {
-          user_id: userId,
-          photo_id: photoId,
+          userId: userId,
+          photoId: photoId,
         },
       })
         .then((ratingDeleted) => {
