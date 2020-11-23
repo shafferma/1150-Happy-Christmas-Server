@@ -12,12 +12,11 @@ module.exports = {
         try {
             const {username, password} = request.body
 
-            User.findOne({ 
+            User.findOne({
                 where: {
                     username: Values.strip(username)
                 }
             }).then((user) => {
-                console.log("Found User", user)
                 // if no user respond with incorrect credts.
                 if (!user) {
                     response.status(401).send(INCORRECT_CREDENTIALS)
@@ -27,14 +26,12 @@ module.exports = {
                 // check that the user provided the correct password
                 Password.compare(password, user.password)
                     .then((isSamePassword) => {
-                        console.log('Check provided password', {isSamePassword})
                         if (!isSamePassword) {
                             response.status(401).send(INCORRECT_CREDENTIALS)
                             return
                         }
 
                         // logic to handle the token and response
-                        
                         response.json({
                             user: user,
                             message: "successfully authenticated",
