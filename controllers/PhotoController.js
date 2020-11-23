@@ -6,7 +6,8 @@ module.exports = {
   getList: function (request, response) {
     try {
      
-      const { limit, page } = request.body
+      const page = request.body.page || 1
+      const limit = request.body.limit || 12
       const pageCheck = page > 0 ? page-1 : 0 
       const offset = limit * pageCheck 
 

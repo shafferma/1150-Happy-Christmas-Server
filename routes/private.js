@@ -22,7 +22,6 @@ module.exports = function(router) {
 
     // photos
     
-    router.get("/photos", PhotoController.getList)
     router.post("/photo/", PhotoController.addPhoto)
     router.get("/photo/:id", PhotoController.getPhoto)
     router.put("/photo/:id", PhotoController.updatePhoto)
