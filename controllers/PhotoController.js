@@ -1,6 +1,7 @@
 const DB = require("../db");
 const Photo = DB.import("../models/photo");
 const File = require('../utls/file');
+const Address = require('../utls/address');
 
 module.exports = {
   getList: function (request, response) {
@@ -12,11 +13,19 @@ module.exports = {
       const offset = limit * pageCheck 
 
       Photo.findAndCountAll({
+        raw: true,
         limit,
         offset
-      }).then(photos => {
+      }).then(data => {
+
+        const photos = {...data}
+        const webAddress = Address.getWebAddress(request)
+
         response.status(200).send({
-          data: photos, 
+          data: {
+            ...photos,
+            rows: File.mapGenerateFileUrl(webAddress, photos.rows)
+          }, 
           message: "Photos found"
         })
       })

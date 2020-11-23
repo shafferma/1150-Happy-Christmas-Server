@@ -49,5 +49,23 @@ module.exports = {
             }
             console.log('file created')
         })
+    },
+
+    /**
+     */
+    generateFileUrl: (address, filename) => {
+        return `${address}/photos/${filename}`
+    },
+
+    /**
+     */
+    mapGenerateFileUrl: (address, objects) => {
+        if (!objects || !objects.length) return []
+        return objects.map(o => {
+            return {
+                ...o,
+                url: `${address}/photos/${o.filename}` 
+            }
+        })
     }   
 }
