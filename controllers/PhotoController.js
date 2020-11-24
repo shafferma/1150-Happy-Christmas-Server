@@ -1,7 +1,5 @@
 const DB = require("../db");
-const Photo = DB.import("../models/photo");
-const User = DB.import("../models/user");
-Photo.belongsTo(User, { foreignKey: 'userId' })
+const Photo = DB.photos;
 const Cloud = require('cloudinary').v2;
 const { v4: uuid } = require('uuid');
 
@@ -9,6 +7,8 @@ module.exports = {
   getList: function (request, response) {
     try {
      
+      const user = request.user
+      const userId = user ? user.id : null;
       const page = request.body.page || 1
       const limit = request.body.limit || 12
       const pageCheck = page > 0 ? page-1 : 0 
@@ -20,13 +20,25 @@ module.exports = {
         offset,
         attributes: [
           'name',
+          'id',
           'description',
           'url',
+          'userId',
           'createdAt',
           'updatedAt'
         ],
-        include: [{ model: User, as: 'user', attributes: ['id', 'username'] }]
+        include: [
+          { model: DB.users, attributes: ['id', 'username'], required: false},
+          { model: DB.favorites, limit: 1, where: { userId }, required: false }
+        ]
       }).then(data => {
+
+        data.rows = data.rows.map(photo => {
+          photo.setDataValue('hasFavorite', !!photo.favorites.length)
+          delete photo.dataValues['favorites']
+          return photo
+        })
+
         response.status(200).send({
           data, 
           message: "Photos found"

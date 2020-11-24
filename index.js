@@ -16,12 +16,12 @@ app.use(cors())
 const database = require("./db")
 
 // initilize database
-database.authenticate()
+database.sequelize.authenticate()
     // after initilzations    
     .then(() => {
         console.log(`Connected to the ${process.env.DB_NAME} database.`)
-        database.sync()
-        // database.sync({force: true}) // resets tables
+        // database.sequelize.sync()
+        database.sequelize.sync({force: true}) // resets tables
     })
 
 // middleware: tells our application to parse requsts as JSON
@@ -48,11 +48,12 @@ const publicRoutes = require("./routes/public")
 const privateRoutes = require("./routes/private")
 
 // register our public routes using our public router
+publicRouter.use(require('./middleware/validate-session')(false))
 app.use("/api", publicRoutes(publicRouter))
  
 // register our "validate-session" middleware on our private 
 // router the following routes will require a token
-privateRouter.use(require('./middleware/validate-session'))
+privateRouter.use(require('./middleware/validate-session')())
 
 // register our private routes with our private router
 app.use("/api", privateRoutes(privateRouter))

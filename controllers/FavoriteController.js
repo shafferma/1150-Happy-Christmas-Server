@@ -1,5 +1,5 @@
 const DB = require("../db");
-const Favorite = DB.import("../models/favorite");
+const Favorite = DB.favorites;
 
 module.exports = {
   addFavorite: function (request, response) {

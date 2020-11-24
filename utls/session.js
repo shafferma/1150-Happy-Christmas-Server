@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 const DB = require("../db");
-const User = DB.import("../models/user"); 
+const User = DB.users;
 
 module.exports = {
     // generates a token we can give to the User for handling authentication
@@ -9,6 +9,7 @@ module.exports = {
     },
     verify: function(token) {
         console.log('Session.verify()', { token })
+
         return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (!decoded) {
                 console.log('token not decoded', { decoded })

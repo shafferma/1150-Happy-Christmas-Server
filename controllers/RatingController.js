@@ -1,5 +1,5 @@
 const DB = require("../db");
-const Rating = DB.import("../models/rating");
+const Rating = DB.ratings;
 
 module.exports = {
   addRating: function (request, response) {

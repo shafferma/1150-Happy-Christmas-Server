@@ -1,15 +1,23 @@
 const Session = require("../utls/session");
 const DB = require("../db");
-const User = DB.import("../models/user"); 
+const User = DB.users; 
 
-module.exports = function(request, response, next) {
+module.exports = (requireValidation = true) => (request, response, next) => {
     console.log('### validate :: start')
     if (request.method == "OPTIONS") {
         console.log('### validate :: method is OPTIONS')
         next()
+
     } else {
         console.log('### validate :: method IS NOT OPTIONS')
         const sessionToken = request.headers.token;
+
+        if (!requireValidation && !sessionToken) {
+            console.log('### validate :: No Token and Token Not Required')
+            next()
+            return
+        }
+
         console.log('### validate :: Validate Session', { sessionToken })
         if (!sessionToken) {
             return response.status(403).send({ auth: false, message: "No token provided."});

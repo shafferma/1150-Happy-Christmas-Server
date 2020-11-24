@@ -2,9 +2,28 @@
 const Sequelize = require("sequelize");
 
 //create our database connection
-const database = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres'
 });
 
+// connect everything to the database object
+const db = {}
+
+db.Sequelize = Sequelize // api helper
+db.sequelize = sequelize // database helper
+
+// models and tables
+db.users = require('../models/user.js')(sequelize, Sequelize)
+db.favorites = require('../models/favorite.js')(sequelize, Sequelize)
+db.photos = require('../models/photo.js')(sequelize, Sequelize)
+db.ratings = require('../models/rating.js')(sequelize, Sequelize)
+
+// declare associations
+db.favorites.belongsTo(db.photos)
+db.favorites.belongsTo(db.users)
+db.photos.hasMany(db.favorites);
+db.photos.belongsTo(db.users);
+db.users.hasMany(db.photos);
+
 //export database
-module.exports = database;
+module.exports = db;
