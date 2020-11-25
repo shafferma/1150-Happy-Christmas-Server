@@ -7,10 +7,18 @@ module.exports = {
   getList: function (request, response) {
     try {
      
+      // get user info
       const user = request.user
       const userId = user ? user.id : null;
-      const page = request.body.page || 1
-      const limit = request.body.limit || 12
+
+      // get parameters
+      const page = request.query.page || 1
+      const limit = request.query.limit || 12
+      const username = request.query.username || null 
+
+      console.info('req', request.query)
+
+      // convert page to offset for query
       const pageCheck = page > 0 ? page-1 : 0 
       const offset = limit * pageCheck 
 
@@ -18,6 +26,12 @@ module.exports = {
         // raw: true,
         limit,
         offset,
+        // if username is present in request.body, return photos by owner username
+        ...(username ? {
+          where: {
+            "$user.username$": username
+          }
+        } : {}),
         attributes: [
           'name',
           'id',

@@ -13,9 +13,19 @@ module.exports = {
             const {username, password} = request.body
 
             User.findOne({
+                raw: true,
                 where: {
                     username: Values.strip(username)
-                }
+                },
+                attributes: [
+                    'id',
+                    'firstname',
+                    'lastname',
+                    'email',
+                    'username',
+                    'admin',
+                    'password'
+                ]
             }).then((user) => {
                 // if no user respond with incorrect credts.
                 if (!user) {
@@ -32,8 +42,9 @@ module.exports = {
                         }
 
                         // logic to handle the token and response
+                        delete user['password']
                         response.json({
-                            user: user,
+                            user,
                             message: "successfully authenticated",
                             sessionToken: Session.generateToken(user)
                         });
