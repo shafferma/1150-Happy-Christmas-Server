@@ -14,7 +14,8 @@ module.exports = {
       // get parameters
       const page = request.query.page || 1
       const limit = request.query.limit || 12
-      const username = request.query.username || null 
+      const username = request.query.username || null
+      const favorites = request.query.favorites || false
 
       console.info('req', request.query)
 
@@ -43,7 +44,18 @@ module.exports = {
         ],
         include: [
           { model: DB.users, attributes: ['id', 'username'], required: false},
-          { model: DB.favorites, limit: 1, where: { userId }, required: false }
+          { 
+            model: DB.favorites,
+            // i don't understand this but it works
+            ...(favorites ? {
+              where: { userId }, 
+              required: true
+            } : {
+              limit: 1, 
+              where: { userId }, 
+              required: false
+            }) 
+          }
         ]
       }).then(data => {
 
