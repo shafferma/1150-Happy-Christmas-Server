@@ -19,8 +19,8 @@ db.photos = require('../models/photo.js')(sequelize, Sequelize)
 db.ratings = require('../models/rating.js')(sequelize, Sequelize)
 
 // declare associations
-db.favorites.belongsTo(db.photos)
-db.favorites.belongsTo(db.users)
+db.favorites.belongsTo(db.photos, { onDelete: 'cascade' })
+db.favorites.belongsTo(db.users, { onDelete: 'cascade' })
 db.photos.hasMany(db.favorites);
 db.photos.belongsTo(db.users);
 db.users.hasMany(db.photos);

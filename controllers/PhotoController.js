@@ -186,6 +186,10 @@ module.exports = {
       const isAdmin = request.user.admin;
       const userId = request.user.id;
 
+      console.log(photoId,
+        isAdmin,
+        userId)
+
       // find photo to get the cloudinary_public_id
       Photo.findOne({
         where: {
