@@ -55,13 +55,27 @@ module.exports = {
               where: { userId }, 
               required: false
             }) 
+          },
+          { 
+            model: DB.ratings,
+            limit: 1, 
+            where: { userId }, 
+            required: false
           }
         ]
       }).then(data => {
 
         data.rows = data.rows.map(photo => {
+          // determine if user requesting photo has added it to their favorites
           photo.setDataValue('hasFavorite', !!photo.favorites.length)
           delete photo.dataValues['favorites']
+
+          // determine if user requesting photo has given it a rating
+          if (photo.ratings.length) {
+            photo.setDataValue('hasRating', photo.ratings[0].rating)
+          }
+          delete photo.dataValues['ratings']
+          
           return photo
         })
 

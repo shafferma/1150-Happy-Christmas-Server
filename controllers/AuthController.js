@@ -29,7 +29,7 @@ module.exports = {
             }).then((user) => {
                 // if no user respond with incorrect credts.
                 if (!user) {
-                    response.status(401).send(INCORRECT_CREDENTIALS)
+                    response.status(401).send({ error: INCORRECT_CREDENTIALS })
                     return 
                 }
 
@@ -37,7 +37,7 @@ module.exports = {
                 Password.compare(password, user.password)
                     .then((isSamePassword) => {
                         if (!isSamePassword) {
-                            response.status(401).send(INCORRECT_CREDENTIALS)
+                            response.status(401).send({ error: INCORRECT_CREDENTIALS })
                             return
                         }
 
@@ -52,7 +52,7 @@ module.exports = {
                     })
                     .catch((error) => {
                         console.log(error)
-                        response.status(401).send(INCORRECT_CREDENTIALS)
+                        response.status(401).send({ error: INCORRECT_CREDENTIALS })
                     })
             })
         

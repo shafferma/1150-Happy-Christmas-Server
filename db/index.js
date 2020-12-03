@@ -21,9 +21,15 @@ db.ratings = require('../models/rating.js')(sequelize, Sequelize)
 // declare associations
 db.favorites.belongsTo(db.photos, { onDelete: 'cascade' })
 db.favorites.belongsTo(db.users, { onDelete: 'cascade' })
+
+db.ratings.belongsTo(db.photos, { onDelete: 'cascade' })
+db.ratings.belongsTo(db.users, { onDelete: 'cascade' })
+
 db.photos.hasMany(db.favorites);
+db.photos.hasMany(db.ratings);
+
 db.photos.belongsTo(db.users);
-db.users.hasMany(db.photos);
+db.users.hasMany(db.photos, { onDelete: 'cascade' });
 
 //export database
 module.exports = db;
