@@ -9,8 +9,8 @@ const express = require("express")
 const app = express();
 
 // allows client to make calls to api server
-// const cors = require("cors");
-// app.use(cors())
+const cors = require("cors");
+app.use(cors())
 
 //import our database 
 const database = require("./db")
