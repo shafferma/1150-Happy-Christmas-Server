@@ -10,7 +10,8 @@ module.exports = (requireValidation = true) => (request, response, next) => {
 
     } else {
         console.log('### validate :: method IS NOT OPTIONS')
-        const sessionToken = request.headers.token;
+        const sessionToken = request.headers.authorization;
+        console.log(request.headers)
 
         if (!requireValidation && !sessionToken) {
             console.log('### validate :: No Token and Token Not Required')
