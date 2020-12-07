@@ -25,8 +25,8 @@ db.favorites.belongsTo(db.users, { onDelete: 'cascade' })
 db.ratings.belongsTo(db.photos, { onDelete: 'cascade' })
 db.ratings.belongsTo(db.users, { onDelete: 'cascade' })
 
-db.photos.hasMany(db.favorites);
-db.photos.hasMany(db.ratings);
+db.photos.hasMany(db.favorites, { onDelete: 'cascade' });
+db.photos.hasMany(db.ratings, { onDelete: 'cascade' });
 
 db.photos.belongsTo(db.users);
 db.users.hasMany(db.photos, { onDelete: 'cascade' });
