@@ -20,8 +20,8 @@ database.sequelize.authenticate()
     // after initilzations    
     .then(() => {
         console.log(`Connected to the ${process.env.DB_NAME} database.`)
-        // database.sequelize.sync()
-        database.sequelize.sync({force: true}) // resets tables
+        database.sequelize.sync()
+        // database.sequelize.sync({force: true}) // resets tables
     })
 
 // middleware: tells our application to parse requsts as JSON
