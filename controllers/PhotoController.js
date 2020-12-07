@@ -202,7 +202,9 @@ module.exports = {
     }
     catch (error) {
       console.log("updatePhoto error", error);
-      response.send(500, "Error");
+      response.status(500).send({
+        error: "Server Error"
+      });
     }
   },
 
@@ -260,7 +262,8 @@ module.exports = {
 
     } catch (error) {
       console.log("removePhoto error", error);
-      response.send(500, "Error");
+      response.status(500).send({ error: "Error" });
+
     }
   },
 };

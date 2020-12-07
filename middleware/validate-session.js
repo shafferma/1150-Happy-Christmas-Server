@@ -20,7 +20,7 @@ module.exports = (requireValidation = true) => (request, response, next) => {
 
         console.log('### validate :: Validate Session', { sessionToken })
         if (!sessionToken) {
-            return response.status(403).send({ auth: false, message: "No token provided."});
+            return response.status(403).send({ auth: false, error: "No token provided."});
         } else {
             Session.verify(sessionToken)
                 .then((user) => {
@@ -30,7 +30,9 @@ module.exports = (requireValidation = true) => (request, response, next) => {
                 })
                 .catch((error) => {
                     console.log('error validating session', { error })
-                    response.status(500).send('Something went wrong validating your session.')
+                    response.status(500).send({
+                        error: 'Something went wrong validating your session.'
+                    })
                 })
         }
     }

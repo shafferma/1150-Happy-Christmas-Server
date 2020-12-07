@@ -12,7 +12,9 @@ module.exports = {
 
       //user did not provide their username and password
       if (!username || !password || !email || !firstname || !lastname) {
-        response.status(400).send("A username, password, firstname, lastname, and email are required to register.");
+        response.status(400).send({
+          error: "A username, password, firstname, lastname, and email are required to register."
+        });
         return;
       }
 
@@ -31,7 +33,9 @@ module.exports = {
         // if username already exists, return an error
         if (userExists) {
           console.log("user already exists");
-          response.status(400).send("Username already exists");
+          response.status(400).send({ 
+            error: "Username already exists"
+          })
           return;
         }
 
@@ -57,7 +61,7 @@ module.exports = {
       });
     } catch (error) {
       console.log("create user error", error);
-      response.send(500, "Error");
+      response.status(500).send({ error })
     }
   },
 
@@ -118,7 +122,7 @@ module.exports = {
       });
     } catch (error) {
       console.log("get error", error);
-      response.send(500, "Error");
+      response.status(500).send({ error: "Error" });
     }
   },
   updateSingle: function (request, response) {
@@ -144,13 +148,9 @@ module.exports = {
       });
       return;
 
-      // Values.strip(username)
-      // response.status(200).send({
-      //     beep: 'boop'
-      // })
     } catch (error) {
       console.log("update error", error);
-      response.send(500, "Error");
+      response.status(500).send({ error: "Error" });
     }
   },
   removeSingle: function (request, response) {
@@ -198,7 +198,7 @@ module.exports = {
       });
     } catch (error) {
       console.log("remove error", error);
-      response.send(500, "Error");
+      response.status(500).send({ error: "Error" });
     }
   },
 };

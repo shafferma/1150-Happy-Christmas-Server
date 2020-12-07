@@ -59,7 +59,9 @@ module.exports = {
         } catch(error) {
             // this error is only sent if there is a problem with our logic above
             console.log(error)
-            response.status(500).send("Server error")
+            response.status(500).send({
+                error: "Server error"
+            })
         }
         
     }
