@@ -134,11 +134,15 @@ module.exports = {
       const lastname = request.body.lastname || '';
       const email = request.body.email || '';
       const password = request.body.password || '';
+      const admin = request.body.admin || false;
+
+      console.info('updateUser, set admin', { admin })
 
       const userData = {
         firstname,
         lastname,
         email,
+        ...(user.admin ? { admin: !!admin } : {}),
         ...(password ? { password: Password.hash(password) } : {}),
       };
       console.log(request.body);
