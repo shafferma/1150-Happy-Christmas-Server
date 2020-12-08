@@ -128,7 +128,12 @@ module.exports = {
   updateSingle: function (request, response) {
     try {
       const { username } = request.params;
-      const { firstname, lastname, email, password } = request.body;
+
+      const firstname = request.body.firstname || '';
+      const lastname = request.body.lastname || '';
+      const email = request.body.email || '';
+      const password = request.body.password || '';
+
       const userData = {
         firstname,
         lastname,
