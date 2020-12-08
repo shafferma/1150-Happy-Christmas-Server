@@ -76,7 +76,7 @@ module.exports = {
       User.findAndCountAll({
         limit,
         offset,
-        order: '"createdAt" DESC'
+        order: [['createdAt', 'DESC']]
       }).then(data => {
         response.status(200).send({
           data: data, 

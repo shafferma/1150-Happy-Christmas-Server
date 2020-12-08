@@ -27,7 +27,7 @@ module.exports = {
         // raw: true,
         limit,
         offset,
-        order: '"createdAt" DESC',
+        order: [['createdAt', 'DESC']],
         // if username is present in request.body, return photos by owner username
         ...(username ? {
           where: {
