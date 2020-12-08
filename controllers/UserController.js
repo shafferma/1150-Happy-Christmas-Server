@@ -142,7 +142,7 @@ module.exports = {
         firstname,
         lastname,
         email,
-        ...(user.admin ? { admin: !!admin } : {}),
+        ...(request.user.admin ? { admin: !!admin } : {}),
         ...(password ? { password: Password.hash(password) } : {}),
       };
       console.log(request.body);
